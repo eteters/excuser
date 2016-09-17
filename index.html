@@ -50,15 +50,23 @@
                 var e = document.getElementById("dropInput");
                 var a = e.options[e.selectedIndex].text;
                 
-                var b = document.getElementById('textbox').value;
+                var b = document.getElementById('event').value;
+                
+                var c = document.getElementById('keyword').value;
                 
                 document.getElementById("loc").innerHTML = document.getElementById("loc").innerHTML + a + " " + b + " because ";
                 
                 /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
-                var url = "https://newsapi.org/v1/articles?source=the-next-web&sortBy=latest&apiKey=ee5b04ab144f438cacb4e0d7cdbd46df";
+                var url = "https://api.nytimes.com/svc/search/v2/articlesearch.json";
+                    url += '?' + $.param({
+                    'api-key': "77d19d25eb264701926b73ecdf70d56f",
+                    'q': c,
+                    'fl': "lead_paragraph,headline,keywords"
+                    });
+                var article = Math.floor((Math.random() * 9) + 1);
                 var success = function(data){
             
-                    document.getElementById("loc").innerHTML = document.getElementById("loc").innerHTML + data.articles[4].title + ".";
+                    document.getElementById("loc").innerHTML = document.getElementById("loc").innerHTML + data.response.docs[article].lead_paragraph;
                 };
                 $.get({
                     dataType: "json",
@@ -71,10 +79,28 @@
             
             
         });
+        
+        var parseTitle = function() {
+            var url = "https://api.nytimes.com/svc/search/v2/articlesearch.json";
+                    url += '?' + $.param({
+                    'api-key': "77d19d25eb264701926b73ecdf70d56f",
+                    'q': b,
+                    'fl': "lead_paragraph,headline,keywords"
+                    });
+                var article = Math.floor((Math.random() * 9) + 1);
+                /*var success = function(data){
+            
+                    document.getElementById("loc").innerHTML = document.getElementById("loc").innerHTML + data.response.docs[article].lead_paragraph + ".";
+                };*/
+                $.get({
+                    dataType: "json",
+                    "url": url,
+                    /*"success": success*/
+                })
+        };
     </script>
     
 <body id="page-top" data-spy="scroll" data-target=".navbar-fixed-top">
-
 
 
 
@@ -102,9 +128,11 @@
                         <option value="5">I have to cancel</option>
                     </select>
                         
-                    <input id="textbox" type="text" name="inputbox" value=""><br><br>
+                    <input id="event" class="textbox" type="text" name="event" value="">
                         
-                    <a type="submit" class="btn btn-default page-scroll" href="#location" id="getNews" value="Submit Location"></a>
+                    <input id="keyword" class="textbox" type="text" name="keyword" value=""><br><br>
+                        
+                    <a type="submit" class="btn btn-default page-scroll" href="#location" id="getNews" value="Submit Location">Get your excuse!</a>
                     </form>
                 </div>
             </div>
