@@ -2,7 +2,7 @@
 <html lang="en">
 
 <head>
-
+    <link href="css/main.css" rel="stylesheet">
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -35,40 +35,51 @@
     <!-- Scrolling Nav JavaScript -->
     <script src="js/jquery.easing.min.js"></script>
     <script src="js/scrolling-nav.js"></script>
-
-
-</head>
-
-<!-- The #page-top ID is part of the scrolling feature - the data-spy and data-target are part of the built-in Bootstrap scrollspy function -->
+    
+    
     <script>
-        
-        
-        var obj
         $(function(){
             var getNews = function(){
-            var url = "https://api.nytimes.com/svc/search/v2/articlesearch.json";
-url += '?' + $.param({
-    'api-key': "77d19d25eb264701926b73ecdf70d56f",
-    'q': "iowa",
-  'fl': "lead_paragraph,headline,keywords"
-});
-              
-            var success = function(data){
-            console.log(data); 
-                document.getElementById("loc").innerHTML = document.getElementById("loc").innerHTML + data.response.docs[0].lead_paragraph;
-            };
-            $.get({
-                dataType: "json",
-                "url": url,
-                "success": success
-            })
+                
+                /*This may not work right away...*/
+                
+                var e = document.getElementById("dropInput");
+                var a = e.options[e.selectedIndex].text;
+                
+                var b = document.getElementById('textbox').value;
+                
+                document.getElementById("loc").innerHTML =  a + " " + b + " because ";
+                
+                /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
+               var url = "https://api.nytimes.com/svc/search/v2/articlesearch.json";
+                    url += '?' + $.param({
+                    'api-key': "77d19d25eb264701926b73ecdf70d56f",
+                    'q': b,
+                    'fl': "lead_paragraph,headline,keywords"
+                    });
+                var success = function(data){
+            
+                    document.getElementById("loc").innerHTML = document.getElementById("loc").innerHTML + data.response.docs[2].lead_paragraph ;
+                };
+                $.get({
+                    dataType: "json",
+                    "url": url,
+                    "success": success
+                })
             }
-              $("#getNews").on("click", getNews);
+            $("#getNews").on("click", getNews);
             
             
             
         });
     </script>
+    
+    
+
+</head>
+
+<!-- The #page-top ID is part of the scrolling feature - the data-spy and data-target are part of the built-in Bootstrap scrollspy function -->
+  
     
 <body id="page-top" data-spy="scroll" data-target=".navbar-fixed-top">
 
@@ -85,12 +96,20 @@ url += '?' + $.param({
 <!--             Text Input -->
                     <form action="#"   method="get">
             <div>
-<!--
-                <label for="user"> Location:</label>
-                <input id= "user" type="text" name = "location" Placeholder="" maxlength="10">
--->
+
+                <select id="dropInput" name="dropdown">
+                        <option value="1">I will be late to</option>
+                        <option value="2">I have to reschedule</option>
+                        <option value="3">I can't make it to</option>
+                        <option value="4">I might miss</option>
+                        <option value="5">I have to cancel</option>
+                    </select>
+                        
+                    <input id="textbox" type="text" name="inputbox" value=""><br><br>
+                        <a type="submit" class="btn btn-default page-scroll" href="#location" id="getNews">Get an Excuse!</a>
+                   
             </div>
-                     <a type="submit" class="btn btn-default page-scroll" href="#location" id="getNews" value="Submit Location">Get an Excuse!</a>
+                     
                     </form>
                 </div>
             </div>
@@ -105,7 +124,7 @@ url += '?' + $.param({
             <div class="row">
                 <div class="col-lg-12">
                     <h1>Your Excuse</h1>
-                    <div id="loc">You were late because </div>
+                    <div id="loc"> </div>
                 </div>
             </div>
         </div>
