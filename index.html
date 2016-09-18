@@ -7,9 +7,11 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="description" content="">
-    <meta name="author" content="">
+    <meta name="author" content="Elliot Goodman, Chris Mitchell, Evan Teters, Lydia Snyder">
 
-    <title>Excuser</title>
+    <title>Excusify</title>
+    
+    <link href="https://fonts.googleapis.com/css?family=Fjalla+One|Open+Sans+Condensed:300|Yatra+One" rel="stylesheet">
 
     <!-- Bootstrap Core CSS -->
     <link href="css/bootstrap.min.css" rel="stylesheet">
@@ -42,31 +44,119 @@
 
 <!-- The #page-top ID is part of the scrolling feature - the data-spy and data-target are part of the built-in Bootstrap scrollspy function -->
     <script>
+        
+        
+            
+        
         $(function(){
+            
             var getNews = function(){
-                
-                /*This may not work right away...*/
                 
                 var e = document.getElementById("dropInput");
                 var a = e.options[e.selectedIndex].text;
                 
                 var b = document.getElementById('event').value;
                 
+                if (b === undefined || b === null) {
+                    /*alert("input 2");*/
+                }
+                /*alert("1 alerts work...");*/
+                
                 var c = document.getElementById('keyword').value;
                 
-                document.getElementById("loc").innerHTML = document.getElementById("loc").innerHTML + a + " " + b + " because ";
+                /*document.getElementById("loc").innerHTML = "";
+                
+                document.getElementById("loc").innerHTML = document.getElementById("loc").innerHTML + a + " " + b + " because ";*/
                 
                 /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
+                /*alert("1.5");*/
                 var url = "https://api.nytimes.com/svc/search/v2/articlesearch.json";
                     url += '?' + $.param({
                     'api-key': "77d19d25eb264701926b73ecdf70d56f",
                     'q': c,
                     'fl': "lead_paragraph,headline,keywords"
                     });
-                var article = Math.floor((Math.random() * 9) + 1);
+                /*alert("1.75");*/
+                /*var article = Math.floor((Math.random() * 9) + 1);*/
+                var article = 1;
+                var results = 0;
+                /*alert("1.77");*/
                 var success = function(data){
-            
-                    document.getElementById("loc").innerHTML = document.getElementById("loc").innerHTML + data.response.docs[article].lead_paragraph;
+                    /*alert("1.8");*/
+                    var d = data.response.docs[article];
+                    if( d === undefined || d === null){
+                        /*alert("special");*/
+                        d = "There are no good excuses we can find for that keyword. ";
+                        results = 0;
+                        /*alert("1.83");*/
+                    } else {
+                        article = 20;
+                        d = data.response.docs[article];
+                        while( d === undefined || d === null ) {
+                            article--;
+                            d = data.response.docs[article];
+                            /*alert("1.85");*/
+                        }
+                        results = article;
+                        
+                    /*alert("1.85");
+                    if (data.response.docs[article].lead_paragraph === undefined || data.response.docs[article].lead_paragraph === null) {
+                        alert("$$$");
+                        
+                    } else {
+                        var d = data.response.docs[article].lead_paragraph;
+                    }*/
+                        
+                        
+                    /*var d = data.response.docs[article].lead_paragraph;
+                    alert("1.9");*/
+                    /*if (b === undefined || b === null) {
+                         alert("no input in second field");
+                    }*/
+                    /*article = Math.floor((Math.random() * (article)) + 1);*/
+                    /*alert("2.0");*/
+                    /*d = data.response.docs[article].lead_paragraph;*/
+                        
+                        
+                        
+                    }//end else for if there's no entry in the API for a given index for that given keyword
+                        
+                    
+                    
+                    if(results > 0) {
+                        article = Math.floor((Math.random() * results) + 1);
+                        d = data.response.docs[article].lead_paragraph;
+                        /*alert("2.1");*/
+                    }
+                    
+                    var words = d.split(" ");
+                    /*alert("2.2");*/
+                    
+                    firstLetter = d[0].toLowerCase();
+                    d = d.slice(1, d.length);
+                    while( words[0] == "What" || 
+                          words[0] == "Who" || 
+                          words[0] == "Where" || 
+                          words[0] == "When" || 
+                          words[0] == "Why" || 
+                          words[0] == "How" || 
+                          words[0] == "Have" || 
+                          words[0] == "Which") {
+                        article = Math.floor((Math.random() * results) + 1);
+                        d = data.response.docs[article].lead_paragraph;
+                        words = d.split(" ");
+                        firstLetter = d[0].toLowerCase();
+                        d = d.slice(1, d.length);
+                        /*alert("filtering question");*/
+                    }
+                    var sentences = d.split(". ");
+                    
+                    document.getElementById("loc").innerHTML = "";
+                
+                    document.getElementById("loc").innerHTML = document.getElementById("loc").innerHTML + a + " " + b + " because ";
+                    
+                    document.getElementById("loc").innerHTML = document.getElementById("loc").innerHTML + firstLetter + sentences[0] + ".";
+                    /*alert("finished");*/
                 };
                 $.get({
                     dataType: "json",
@@ -75,9 +165,7 @@
                 })
             }
             $("#getNews").on("click", getNews);
-            
-            
-            
+            $("#regetNews").on("click", getNews);
         });
         
         var parseTitle = function() {
@@ -88,10 +176,6 @@
                     'fl': "lead_paragraph,headline,keywords"
                     });
                 var article = Math.floor((Math.random() * 9) + 1);
-                /*var success = function(data){
-            
-                    document.getElementById("loc").innerHTML = document.getElementById("loc").innerHTML + data.response.docs[article].lead_paragraph + ".";
-                };*/
                 $.get({
                     dataType: "json",
                     "url": url,
@@ -102,14 +186,19 @@
     
 <body id="page-top" data-spy="scroll" data-target=".navbar-fixed-top">
 
-
+    <div id="missionStatement">
+        <h1 id="pageHead">Welcome to Excusify!</h1>
+        <p>
+            Here at Team Excusify, we understand that you're a busy individual, and sometimes, you just can't find the time for every obligation you may have on your schedule. Fortunately, we've got your back by allowing you to have the most relevant and believable excuses at your fingertips. By simply entering some information to customize your excuse, you'll be effectively managing your schedule in no time.
+        <p>
+    </div>
 
 <!--     Intro Section -->
     <section id="intro" class="intro-section">
         <div class="container">
             <div class="row">
                 <div class="col-lg-12">
-                    <h1>Get an Excuse!</h1>
+                    <h1>Get an Excuse!</h1><br>
                     
 <!--             Text Input -->
                     <form action="#" method="get">
@@ -119,8 +208,8 @@
                 <input id= "user" type="text" name = "location" Placeholder="" maxlength="10">
 -->
             </div>
-                        
-                    <select id="dropInput" name="dropdown">
+                  <div id="line">     
+                    <select id="dropInput" class="input" name="dropdown">
                         <option value="1">I will be late to</option>
                         <option value="2">I have to reschedule</option>
                         <option value="3">I can't make it to</option>
@@ -128,11 +217,12 @@
                         <option value="5">I have to cancel</option>
                     </select>
                         
-                    <input id="event" class="textbox" type="text" name="event" value="">
+                    <input id="event" class="textbox input" type="text" name="event" value="" placeholder="unimportant event">
+                        <span>because</span>
+                    <input id="keyword" class="textbox input" type="text" name="keyword" value="" placeholder="keyword"><br><br>
+                        </div>
+                    <a type="submit" class="btn btn-default page-scroll" href="#location" id="getNews" value="Submit Location">Get your excuse</a>
                         
-                    <input id="keyword" class="textbox" type="text" name="keyword" value=""><br><br>
-                        
-                    <a type="submit" class="btn btn-default page-scroll" href="#location" id="getNews" value="Submit Location">Get your excuse!</a>
                     </form>
                 </div>
             </div>
@@ -148,12 +238,18 @@
                 <div class="col-lg-12">
                     <h1>Your Excuse</h1>
                     <!-- THIS IS WHERE THE MAGIC HAPPENS -->
-                    <div id="loc"></div>
+                    <div id="loc">To generate an excuse, enter information into the fields above, and then let Excusify work its magic...</div>
                 </div>
             </div>
-        </div>
+        </div><br><br><br>
+        <p id="regetMessage">
+            Not satisfied with this fantastic excuse?
+        </p>
+        <a type="submit" class="btn btn-default page-scroll" href="#location" id="regetNews" value="Submit Location">Get another one</a>
     </section>
-
+    <a href="http://developer.nytimes.com">
+    <img src="poweredby_nytimes_200a.png" id="NYTlogo" alt="Data provided by The New York Times">
+    </a>
    
     <!--  JS   -->
 <!--<a href="https://newsapi.org/v1/articles?source=the-next-web&sortBy=latest&apiKey=ee5b04ab144f438cacb4e0d7cdbd46df"></a>-->
